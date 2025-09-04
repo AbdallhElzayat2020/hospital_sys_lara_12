@@ -1,12 +1,12 @@
 @extends('layouts.master2')
 @section('title', 'Login')
-@section('css')
+@push('css')
     <style>
         .panel {
             display: none;
         }
     </style>
-@endsection
+@endpush
 @section('content')
     <div class="container-fluid">
         <div class="row no-gutter">
@@ -302,9 +302,9 @@
 @endsection
 @section('js')
     <script>
-        $('#sectionChooser').change(function() {
+        $('#sectionChooser').change(function () {
             var myID = $(this).val();
-            $('.panel').each(function() {
+            $('.panel').each(function () {
                 myID === $(this).attr('id') ? $(this).show() : $(this).hide();
             });
         });

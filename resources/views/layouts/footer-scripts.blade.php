@@ -31,3 +31,5 @@
 <!-- custom js -->
 <script src="{{ asset('assets/dashboard/js/custom.js') }}"></script><!-- Left-menu js-->
 <script src="{{ asset('assets/dashboard/plugins/side-menu/sidemenu.js') }}"></script>
+
+@stack('js')
