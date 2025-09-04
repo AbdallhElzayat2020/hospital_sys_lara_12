@@ -13,11 +13,19 @@ Route::group(
     [
         'prefix' => LaravelLocalization::setLocale(),
         'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
-    ], function () {
+    ],
+    function () {
+        //
+    }
+);
 
+
+Route::middleware(['auth:web'])->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('dashboard.user.pages.home');
+    })->name('dashboard');
 });
-
-
 
 
 Route::middleware('auth')->group(function () {

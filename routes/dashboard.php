@@ -2,13 +2,15 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dashboard\DashboardController;
-
-Route::get('/dashboardaaaaa', [DashboardController::class, 'index'])->name('dashboard.index');
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+use App\Http\Controllers\Dashboard\Admin\DashboardController;
+use App\Http\Controllers\Dashboard\Admin\AuthController;
 
 
-require __DIR__ . '/auth.php';
+Route::post('login-admin', [AuthController::class, 'store'])->name('login.admin');
+
+
+Route::middleware(['auth:admin'])->group(function () {
+
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::post('admin-logout', [AuthController::class, 'destroy'])->name('admin.logout');
+});
