@@ -61,6 +61,7 @@ class ResetPasswordController extends Controller
 
     public function verifyOtp(Request $request): \Illuminate\Http\JsonResponse
     {
+        // or validate in Class Request
         $request->validate([
             'email' => 'required|email|exists:admins,email',
             'token' => 'required|string|size:6',
@@ -110,10 +111,10 @@ class ResetPasswordController extends Controller
 
         $otp = $this->otp->validate($request->email, $request->token);
 
-        if (!$otp) {
+        if ($otp->status === false) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid OTP',
+                "message" => "OTP Expired",
             ], 400);
         }
 
