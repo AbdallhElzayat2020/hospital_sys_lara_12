@@ -8,13 +8,15 @@ Route::get('/', function () {
 });
 
 
-/* frontend Routes  */
+    /* ----------------------------------- frontend Routes -----------------------------------   */
 Route::group(
     [
         'prefix' => LaravelLocalization::setLocale(),
         'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
 
     ], function () {
+
+    /*  ----------------------------------- Start Routes ----------------------------------- */
 
     Route::middleware(['auth:web'])->group(function () {
 
@@ -23,7 +25,7 @@ Route::group(
         })->name('dashboard');
     });
 
-
+    /*  ----------------------------------- End Routes ----------------------------------- */
     require __DIR__ . '/auth.php';
     require __DIR__ . '/dashboard.php';
 });

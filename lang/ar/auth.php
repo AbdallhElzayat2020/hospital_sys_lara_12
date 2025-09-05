@@ -18,6 +18,6 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 
-    'emai;l' => 'البريد الالكتروني',
+    'email' => 'البريد الالكتروني',
 
 ];
