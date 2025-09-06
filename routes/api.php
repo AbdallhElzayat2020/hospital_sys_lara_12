@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\Auth\ProfileController;
 use App\Http\Controllers\Api\Admin\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Admin\SectionController;
-use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\Admin\DoctorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +63,19 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('change-password', 'changePassword');
         });
 
+    /*
+   |--------------------------------------------------------------------------
+   | Departments (Sections) Management
+   |--------------------------------------------------------------------------
+   */
     Route::apiResource('admin/sections', SectionController::class);
+
+    /*
+   |--------------------------------------------------------------------------
+   | Doctors (Doctors) Management
+   |--------------------------------------------------------------------------
+   */
+    Route::apiResource('admin/doctors', DoctorController::class);
 });
 
 

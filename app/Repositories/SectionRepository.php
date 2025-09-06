@@ -8,7 +8,7 @@ use App\Models\Section;
 
 class SectionRepository implements SectionInterface
 {
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $sections = Section::all();
 
@@ -23,7 +23,7 @@ class SectionRepository implements SectionInterface
         ]);
     }
 
-    public function store($request)
+    public function store($request): \Illuminate\Http\JsonResponse
     {
 
         $section = Section::create([
@@ -35,7 +35,7 @@ class SectionRepository implements SectionInterface
         ], 201);
     }
 
-    public function update($id, $request)
+    public function update($id, $request): \Illuminate\Http\JsonResponse
     {
         $section = Section::find($id);
 
@@ -58,7 +58,7 @@ class SectionRepository implements SectionInterface
         ], 201);
     }
 
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\JsonResponse
     {
         $section = Section::find($id);
         if (!$section) {
