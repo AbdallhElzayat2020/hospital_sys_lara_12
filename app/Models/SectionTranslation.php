@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Astrotomic\Translatable\Translatable;
+namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class SectionTranslation extends Model
 {
-    use Translatable;
-
-    public $translatedAttributes = ['name'];
+    protected $fillable = ['name'];
 
     public $timestamps = false;
 }

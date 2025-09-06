@@ -2,7 +2,73 @@
 
 namespace App\Repositories;
 
-class SectionRepository
-{
+use App\Http\Resources\SectionResource;
+use App\Interfaces\SectionInterface;
+use App\Models\Section;
 
+class SectionRepository implements SectionInterface
+{
+    public function index()
+    {
+        $sections = Section::all();
+
+        if (!$sections) {
+            return response()->json([
+                'message' => 'No sections found',
+            ], 401);
+        }
+
+        return response()->json([
+            'sections' => SectionResource::collection($sections)
+        ]);
+    }
+
+    public function store($request)
+    {
+
+        $section = Section::create([
+            'name' => $request->input('name'),
+        ]);
+
+        return response()->json([
+            'message' => 'Section created successfully',
+        ], 201);
+    }
+
+    public function update($id, $request)
+    {
+        $section = Section::find($id);
+
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        if (!$section) {
+            return response()->json([
+                'message' => 'Section not found',
+            ], 401);
+        }
+
+        $section->update([
+            'name' => $request->input('name'),
+        ]);
+
+        return response()->json([
+            'message' => 'Section updated successfully',
+        ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $section = Section::find($id);
+        if (!$section) {
+            return response()->json([
+                'message' => 'Section not found',
+            ], 401);
+        }
+        $section->delete();
+        return response()->json([
+            'message' => 'Section deleted successfully',
+        ], 201);
+    }
 }
