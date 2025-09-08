@@ -76,6 +76,14 @@ Route::middleware('auth:sanctum')->group(function () {
    |--------------------------------------------------------------------------
    */
     Route::apiResource('admin/doctors', DoctorController::class);
+
+    /*
+   |--------------------------------------------------------------------------
+   | Appointments (Appointments) Management
+   |--------------------------------------------------------------------------
+   */
+
+    // Route::apiResource('admin/appointments', AppointmentController::class);
 });
 
 

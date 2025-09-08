@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Models\Doctor;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\DoctorRepository;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\Doctor\StoreDoctorRequest;
+use App\Http\Requests\Admin\Doctor\UpdateDoctorRequest;
 
 class DoctorController extends Controller
 {
@@ -21,19 +24,14 @@ class DoctorController extends Controller
         return $this->doctorRepository->index();
     }
 
-    public function store(Request $request)
+    public function store(StoreDoctorRequest $request)
     {
-        // validate request
         return $this->doctorRepository->store($request);
     }
-
-
-    public function update(Request $request, string $id)
+    public function update(UpdateDoctorRequest $request, string $id)
     {
-        // validate request
         return $this->doctorRepository->update($id, $request);
     }
-
 
     public function destroy(string $id)
     {

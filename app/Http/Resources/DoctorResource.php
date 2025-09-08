@@ -22,7 +22,8 @@ class DoctorResource extends JsonResource
             'doctor_email' => $this->email,
             'doctor_phone' => $this->phone,
             'doctor_price' => $this->price,
-            'doctor_image' => new ImageResource($this->whenLoaded('image')),
+            'doctor_department' => $this->section->name,
+            'image' => $this->image != null ? ImageResource::make(($this->whenLoaded('image'))) : 'no image',
         ];
     }
 }
