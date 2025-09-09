@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Admin\Services;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Services\SingleServiceRepository;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\Services\StoreSingleServiceRequest;
+use App\Http\Requests\Admin\Services\UpdateSingleServiceRequest;
 
 class SingleServiceController extends Controller
 {
@@ -14,22 +16,18 @@ class SingleServiceController extends Controller
     {
         $this->serviceRepository = $serviceRepository;
     }
-
     public function index(): \Illuminate\Http\JsonResponse
     {
         return $this->serviceRepository->index();
     }
-
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(StoreSingleServiceRequest $request): \Illuminate\Http\JsonResponse
     {
         return $this->serviceRepository->store($request);
     }
-
-    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(UpdateSingleServiceRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         return $this->serviceRepository->update($id, $request);
     }
-
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         return $this->serviceRepository->destroy($id);
