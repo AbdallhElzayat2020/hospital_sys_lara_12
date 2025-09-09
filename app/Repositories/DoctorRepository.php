@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\DoctorInterface;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\DoctorResource;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class DoctorRepository implements DoctorInterface
 {
     use HandleFileTrait;
-    public function index()
+
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $doctors = Doctor::with('image')->get();
         if (!$doctors) {
@@ -27,7 +28,7 @@ class DoctorRepository implements DoctorInterface
         ], 200);
     }
 
-    public function store($request)
+    public function store($request): \Illuminate\Http\JsonResponse
     {
         try {
 
@@ -62,7 +63,7 @@ class DoctorRepository implements DoctorInterface
         }
     }
 
-    public function update($id, $request)
+    public function update($id, $request): \Illuminate\Http\JsonResponse
     {
 
         $doctor = Doctor::find($id);
@@ -87,7 +88,7 @@ class DoctorRepository implements DoctorInterface
 
         if ($request->filled('password')) {
             $doctor->update([
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($request->password)
             ]);
         }
 
@@ -98,13 +99,12 @@ class DoctorRepository implements DoctorInterface
 
         return response()->json([
             'message' => 'Doctor updated successfully',
-            'doctor'  => DoctorResource::make($doctor),
+            'doctor' => DoctorResource::make($doctor),
         ], 200);
     }
 
 
-
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\JsonResponse
     {
         $doctor = Doctor::find($id);
         if (!$doctor) {
