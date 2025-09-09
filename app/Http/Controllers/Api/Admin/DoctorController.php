@@ -28,7 +28,8 @@ class DoctorController extends Controller
     {
         return $this->doctorRepository->store($request);
     }
-    public function update(UpdateDoctorRequest $request, string $id): \Illuminate\Http\JsonResponse
+
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         return $this->doctorRepository->update($id, $request);
     }
@@ -36,5 +37,10 @@ class DoctorController extends Controller
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         return $this->doctorRepository->destroy($id);
+    }
+
+    public function changeStatus($id): \Illuminate\Http\JsonResponse
+    {
+        return $this->doctorRepository->changeStatus($id);
     }
 }

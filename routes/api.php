@@ -76,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
    |--------------------------------------------------------------------------
    */
     Route::apiResource('admin/doctors', DoctorController::class);
-
+    Route::post('admin/doctors/{id}/change-status', [DoctorController::class, 'changeStatus']);
     /*
    |--------------------------------------------------------------------------
    | Appointments (Appointments) Management

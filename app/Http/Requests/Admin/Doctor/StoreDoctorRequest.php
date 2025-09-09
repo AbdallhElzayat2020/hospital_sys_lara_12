@@ -30,7 +30,7 @@ class StoreDoctorRequest extends FormRequest
             'section_id' => 'required|exists:sections,id',
             'status' => 'required|in:active,inactive',
             'appointments' => 'required', // will make it the appointment day later
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:3000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:3000',
         ];
     }
 }

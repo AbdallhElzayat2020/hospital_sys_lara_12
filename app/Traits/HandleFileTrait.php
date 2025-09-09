@@ -27,7 +27,7 @@ trait HandleFileTrait
         return null;
     }
 
-    public function deleteImage($model, $disk = 'uploads'): void
+    public function deleteImage($model, $disk): void
     {
         if ($model->image) {
             Storage::disk($disk)->delete($model->image->url);

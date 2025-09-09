@@ -10,6 +10,8 @@ interface DoctorInterface
 
     public function update($id, $request);
 
+    public function changeStatus($id);
+
     public function destroy($id);
 
 }

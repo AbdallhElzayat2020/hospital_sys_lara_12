@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Doctor;
+use App\Models\Appointment;
 use App\Traits\HandleFileTrait;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\DoctorInterface;
@@ -16,7 +17,8 @@ class DoctorRepository implements DoctorInterface
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $doctors = Doctor::with('image')->get();
+        $doctors = Doctor::with(['image', 'appointments'])->get();
+
         if (!$doctors) {
             return response()->json([
                 'message' => 'No doctors found',
@@ -42,12 +44,17 @@ class DoctorRepository implements DoctorInterface
                 'price' => $request->price,
                 'section_id' => $request->section_id,
                 'status' => $request->status,
-                'appointments' => is_array($request->appointments) ? implode(',', $request->appointments) : $request->appointments,
             ]);
+
+            // Attach appointments to pivot table
+            $doctor->appointments()->attach($request->appointments);
 
             $this->uploadFile($request, 'image', 'doctors', 'uploads', $doctor);
 
             DB::commit();
+
+            // Load the appointments relationship before returning
+            $doctor->load('appointments');
 
             return response()->json([
                 'message' => 'Doctor created successfully',
@@ -57,16 +64,17 @@ class DoctorRepository implements DoctorInterface
             DB::rollBack();
 
             return response()->json([
-                'message' => 'Doctor not created',
+                'message' => 'Something went wrong please try again',
                 'error' => $th->getMessage(),
             ], 401);
         }
     }
 
-    public function update($id, $request): \Illuminate\Http\JsonResponse
+    public function update($id, $request)
     {
 
-        $doctor = Doctor::find($id);
+
+        $doctor = Doctor::with(['appointments'])->find($id);
 
         if (!$doctor) {
             return response()->json([
@@ -76,14 +84,12 @@ class DoctorRepository implements DoctorInterface
 
         $updateData = $request->only(['name', 'email', 'phone', 'price', 'section_id', 'status']);
 
-        if ($request->has('appointments')) {
-            $updateData['appointments'] = is_array($request->appointments)
-                ? implode(',', $request->appointments)
-                : $request->appointments;
-        }
-
         if (!empty($updateData)) {
             $doctor->update($updateData);
+        }
+
+        if ($request->has('appointments')) {
+            $doctor->appointments()->sync($request->appointments);
         }
 
         if ($request->filled('password')) {
@@ -97,12 +103,35 @@ class DoctorRepository implements DoctorInterface
             $this->uploadFile($request, 'image', 'doctors', 'uploads', $doctor);
         }
 
+        // Reload the doctor with appointments
+        $doctor->load('appointments');
+
         return response()->json([
             'message' => 'Doctor updated successfully',
             'doctor' => DoctorResource::make($doctor),
         ], 200);
     }
 
+    public function changeStatus($id): \Illuminate\Http\JsonResponse
+    {
+        $doctor = Doctor::find($id);
+        if (!$doctor) {
+            return response()->json([
+                'message' => 'Doctor not found',
+            ], 404);
+        }
+
+        if ($doctor->status == 'active') {
+            $doctor->status = 'inactive';
+        } else {
+            $doctor->status = 'active';
+        }
+
+        return response()->json([
+            'message' => 'Doctor status changed successfully',
+            'status' => $doctor->status,
+        ], 200);
+    }
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {

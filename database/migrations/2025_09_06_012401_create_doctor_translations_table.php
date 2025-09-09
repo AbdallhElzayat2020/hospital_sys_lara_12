@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->foreignId('doctor_id')->constrained('doctors')->onDelete('cascade');
             $table->unique(['doctor_id', 'locale']);
 
-            $table->string('appointments');
             $table->string('name');
         });
     }
