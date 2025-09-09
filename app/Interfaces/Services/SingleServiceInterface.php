@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Services;
 
-interface ServiceInterface
+interface SingleServiceInterface
 {
     public function index();
 

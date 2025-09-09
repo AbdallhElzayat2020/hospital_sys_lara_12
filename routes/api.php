@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Admin\DoctorController;
+use App\Http\Controllers\Api\Admin\SectionController;
 use App\Http\Controllers\Api\Admin\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\Auth\ProfileController;
+use App\Http\Controllers\Api\Admin\Services\SingleServiceController;
 use App\Http\Controllers\Api\Admin\Auth\ResetPasswordController;
-use App\Http\Controllers\Api\Admin\SectionController;
-use App\Http\Controllers\Api\Admin\DoctorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,11 +82,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('admin/doctors/sections/{section_id}', [DoctorController::class, 'getDoctorsBySection']);
     /*
    |--------------------------------------------------------------------------
-   | Appointments (Appointments) Management
+   | Services (Services) Management
    |--------------------------------------------------------------------------
    */
 
-    // Route::apiResource('admin/appointments', AppointmentController::class);
+    Route::apiResource('admin/services', SingleServiceController::class);
 });
 
 

@@ -2,74 +2,102 @@
 
 namespace App\Repositories\Services;
 
-use App\Interfaces\Services\ServiceInterface;
+use App\Interfaces\Services\SingleServiceInterface;
 use App\Models\Service;
+use Exception;
 
-class ServiceRepository implements ServiceInterface
+class SingleServiceRepository implements SingleServiceInterface
 {
     public function index()
     {
-        $services = Service::paginate(10);
+        try {
+            $services = Service::paginate(10);
 
-        if (!$services) {
+            if (!$services) {
+                return response()->json([
+                    'message' => 'No services found',
+                ], 401);
+            }
+
             return response()->json([
-                'message' => 'No services found',
-            ], 401);
+                'services' => $services
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching services.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-
-        return response()->json([
-            'services' => $services
-        ], 200);
     }
 
     public function store($request)
     {
-        Service::create([
-            'name' => $request->name,
-            'price' => $request->price,
-            'description' => $request->description,
-            'status' => $request->status,
-        ]);
+        try {
+            Service::create([
+                'name' => $request->name,
+                'price' => $request->price,
+                'description' => $request->description,
+                'status' => $request->status,
+            ]);
 
-        return response()->json([
-            'message' => 'Service created successfully',
-        ], 201);
+            return response()->json([
+                'message' => 'Service created successfully',
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while creating the service.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function update($id, $request)
     {
-        $service = Service::find($id);
+        try {
+            $service = Service::find($id);
 
-        if (!$service) {
+            if (!$service) {
+                return response()->json([
+                    'message' => 'Service not found',
+                ], 404);
+            }
+
+            $service->update([
+                'name' => $request->name,
+                'price' => $request->price,
+                'description' => $request->description,
+                'status' => $request->status,
+            ]);
+
             return response()->json([
-                'message' => 'Service not found',
-            ], 404);
+                'message' => 'Service updated successfully',
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while updating the service.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $service->update([
-            'name' => $request->name,
-            'price' => $request->price,
-            'description' => $request->description,
-            'status' => $request->status,
-        ]);
-
-        return response()->json([
-            'message' => 'Service updated successfully',
-        ], 200);
     }
 
     public function destroy($id)
     {
-        $service = Service::find($id);
-        if (!$service) {
+        try {
+            $service = Service::find($id);
+            if (!$service) {
+                return response()->json([
+                    'message' => 'Service not found',
+                ], 404);
+            }
+            $service->delete();
             return response()->json([
-                'message' => 'Service not found',
-            ], 404);
+                'message' => 'Service deleted successfully',
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while deleting the service.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        $service->delete();
-        return response()->json([
-            'message' => 'Service deleted successfully',
-        ], 200);
     }
 }
