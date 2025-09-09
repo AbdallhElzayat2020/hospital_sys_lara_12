@@ -50,4 +50,9 @@ class SectionController extends Controller
     {
         return $this->sectionRepository->destroy($id);
     }
+
+    public function getSectionsWithDoctors()
+    {
+        return $this->sectionRepository->getSectionsWithDoctors();
+    }
 }

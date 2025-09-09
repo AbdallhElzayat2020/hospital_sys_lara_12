@@ -14,4 +14,5 @@ interface DoctorInterface
 
     public function destroy($id);
 
+    public function getDoctorsBySection($section_id);
 }

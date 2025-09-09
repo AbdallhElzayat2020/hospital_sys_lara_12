@@ -43,4 +43,9 @@ class DoctorController extends Controller
     {
         return $this->doctorRepository->changeStatus($id);
     }
+
+    public function getDoctorsBySection($section_id)
+    {
+        return $this->doctorRepository->getDoctorsBySection($section_id);
+    }
 }

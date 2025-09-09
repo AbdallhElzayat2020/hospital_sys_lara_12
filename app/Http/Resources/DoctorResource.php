@@ -19,7 +19,6 @@ class DoctorResource extends JsonResource
         return [
             'id' => $this->id,
             'doctor_name' => $this->name,
-
             'doctor_email' => $this->email,
             'doctor_phone' => $this->phone,
             'doctor_price' => $this->price,
@@ -30,5 +29,12 @@ class DoctorResource extends JsonResource
             'doctor_appointment' => $this->appointments != null ? AppointmenResource::collection($this->whenLoaded('appointments')) : 'no appointments for this doctor',
 
         ];
+
+
+        /*
+         *  AppointmenResource::collection($collection)   // return multiple appointments
+         *  AppointmenResource::make($collection)   // return single appointment
+         *  DoctorCollection::make($collection)   // return multiple doctors
+         */
     }
 }

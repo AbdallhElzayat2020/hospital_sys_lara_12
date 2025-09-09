@@ -18,6 +18,9 @@ class SectionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->getTranslation('name', app()->getLocale()) ?? '',
+            'doctors' => $this->whenLoaded('doctors', function () {
+                return DoctorResource::collection($this->doctors);
+            }),
         ];
     }
 }

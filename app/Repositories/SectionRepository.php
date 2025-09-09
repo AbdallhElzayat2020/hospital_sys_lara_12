@@ -71,4 +71,19 @@ class SectionRepository implements SectionInterface
             'message' => 'Section deleted successfully',
         ], 201);
     }
+
+    public function getSectionsWithDoctors(): \Illuminate\Http\JsonResponse
+    {
+        $sections = Section::with(['doctors.image', 'doctors.appointments'])->get();
+
+        if ($sections->isEmpty()) {
+            return response()->json([
+                'message' => 'No sections found',
+            ], 404);
+        }
+
+        return response()->json([
+            'sections' => SectionResource::collection($sections)
+        ], 200);
+    }
 }

@@ -11,4 +11,6 @@ interface SectionInterface
     public function update($id, $request);
 
     public function destroy($id);
+
+    public function getSectionsWithDoctors();
 }

@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
    |--------------------------------------------------------------------------
    */
     Route::apiResource('admin/sections', SectionController::class);
+    Route::get('admin/sections-with-doctors', [SectionController::class, 'getSectionsWithDoctors']);
 
     /*
    |--------------------------------------------------------------------------
@@ -77,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
    */
     Route::apiResource('admin/doctors', DoctorController::class);
     Route::post('admin/doctors/{id}/change-status', [DoctorController::class, 'changeStatus']);
+    Route::get('admin/doctors/sections/{section_id}', [DoctorController::class, 'getDoctorsBySection']);
     /*
    |--------------------------------------------------------------------------
    | Appointments (Appointments) Management

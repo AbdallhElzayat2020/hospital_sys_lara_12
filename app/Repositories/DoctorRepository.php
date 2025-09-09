@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\DoctorCollection;
 use App\Models\Doctor;
 use App\Models\Appointment;
 use App\Traits\HandleFileTrait;
@@ -26,10 +27,9 @@ class DoctorRepository implements DoctorInterface
         }
 
         return response()->json([
-            'doctors' => DoctorResource::collection($doctors),
+            'doctors' => DoctorCollection::make($doctors),
         ], 200);
     }
-
     public function store($request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -148,6 +148,21 @@ class DoctorRepository implements DoctorInterface
 
         return response()->json([
             'message' => 'Doctor deleted successfully',
+        ], 200);
+    }
+
+    public function getDoctorsBySection($section_id)
+    {
+        $doctors = Doctor::where('section_id', $section_id)->with('image')->get();
+
+        if ($doctors->isEmpty()) {
+            return response()->json([
+                'message' => 'No doctors found for this section',
+            ], 404);
+        }
+
+        return response()->json([
+            'doctors' => DoctorCollection::make($doctors),
         ], 200);
     }
 }
