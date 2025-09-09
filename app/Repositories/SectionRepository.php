@@ -10,80 +10,114 @@ class SectionRepository implements SectionInterface
 {
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $sections = Section::all();
+        try {
+            $sections = Section::all();
 
-        if (!$sections) {
+            if (!$sections) {
+                return response()->json([
+                    'message' => 'No sections found',
+                ], 401);
+            }
+
             return response()->json([
-                'message' => 'No sections found',
-            ], 401);
+                'sections' => SectionResource::collection($sections)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong, please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'sections' => SectionResource::collection($sections)
-        ]);
     }
 
     public function store($request): \Illuminate\Http\JsonResponse
     {
+        try {
+            Section::create([
+                'name' => $request->input('name'),
+            ]);
 
-        $section = Section::create([
-            'name' => $request->input('name'),
-        ]);
-
-        return response()->json([
-            'message' => 'Section created successfully',
-        ], 201);
+            return response()->json([
+                'message' => 'Section created successfully',
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong, please try again',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     public function update($id, $request): \Illuminate\Http\JsonResponse
     {
-        $section = Section::find($id);
+        try {
+            $section = Section::find($id);
 
-        $request->validate([
-            'name' => 'required',
-        ]);
+            $request->validate([
+                'name' => 'required',
+            ]);
 
-        if (!$section) {
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Section not found',
+                ], 401);
+            }
+
+            $section->update([
+                'name' => $request->input('name'),
+            ]);
+
             return response()->json([
-                'message' => 'Section not found',
-            ], 401);
+                'message' => 'Section updated successfully',
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong, please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        $section->update([
-            'name' => $request->input('name'),
-        ]);
-
-        return response()->json([
-            'message' => 'Section updated successfully',
-        ], 201);
     }
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        $section = Section::find($id);
-        if (!$section) {
+        try {
+            $section = Section::find($id);
+            if (!$section) {
+                return response()->json([
+                    'message' => 'Section not found',
+                ], 401);
+            }
+            $section->delete();
             return response()->json([
-                'message' => 'Section not found',
-            ], 401);
+                'message' => 'Section deleted successfully',
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong, please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-        $section->delete();
-        return response()->json([
-            'message' => 'Section deleted successfully',
-        ], 201);
     }
 
     public function getSectionsWithDoctors(): \Illuminate\Http\JsonResponse
     {
-        $sections = Section::with(['doctors.image', 'doctors.appointments'])->get();
+        try {
+            $sections = Section::with(['doctors.image', 'doctors.appointments'])->get();
 
-        if ($sections->isEmpty()) {
+            if ($sections->isEmpty()) {
+                return response()->json([
+                    'message' => 'No sections found',
+                ], 404);
+            }
+
             return response()->json([
-                'message' => 'No sections found',
-            ], 404);
+                'sections' => SectionResource::collection($sections)
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong, please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'sections' => SectionResource::collection($sections)
-        ], 200);
     }
 }

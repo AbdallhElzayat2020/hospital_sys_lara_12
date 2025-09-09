@@ -18,18 +18,26 @@ class DoctorRepository implements DoctorInterface
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $doctors = Doctor::with(['image', 'appointments'])->get();
+        try {
+            $doctors = Doctor::with(['image', 'appointments'])->get();
 
-        if (!$doctors) {
+            if ($doctors->isEmpty()) {
+                return response()->json([
+                    'message' => 'No doctors found',
+                ], 404);
+            }
+
             return response()->json([
-                'message' => 'No doctors found',
-            ], 404);
+                'doctors' => DoctorCollection::make($doctors),
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong, please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'doctors' => DoctorCollection::make($doctors),
-        ], 200);
     }
+
     public function store($request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -74,81 +82,109 @@ class DoctorRepository implements DoctorInterface
     {
 
 
-        $doctor = Doctor::with(['appointments'])->find($id);
+        try {
+            $doctor = Doctor::with(['appointments'])->find($id);
 
-        if (!$doctor) {
+            if (!$doctor) {
+                return response()->json([
+                    'message' => 'Doctor not found',
+                ], 404);
+            }
+
+            $updateData = $request->only(['name', 'email', 'phone', 'price', 'section_id', 'status']);
+
+            if (!empty($updateData)) {
+                $doctor->update($updateData);
+            }
+
+            if ($request->has('appointments')) {
+                $doctor->appointments()->sync($request->appointments);
+            }
+
+            if ($request->filled('password')) {
+                $doctor->update([
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            if ($request->hasFile('image')) {
+                $this->deleteImage($doctor, 'uploads');
+                $this->uploadFile($request, 'image', 'doctors', 'uploads', $doctor);
+            }
+
+            // Reload the doctor with appointments
+            $doctor->load('appointments');
+
             return response()->json([
-                'message' => 'Doctor not found',
-            ], 404);
+                'message' => 'Doctor updated successfully',
+                'doctor' => DoctorResource::make($doctor),
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        $updateData = $request->only(['name', 'email', 'phone', 'price', 'section_id', 'status']);
-
-        if (!empty($updateData)) {
-            $doctor->update($updateData);
-        }
-
-        if ($request->has('appointments')) {
-            $doctor->appointments()->sync($request->appointments);
-        }
-
-        if ($request->filled('password')) {
-            $doctor->update([
-                'password' => Hash::make($request->password)
-            ]);
-        }
-
-        if ($request->hasFile('image')) {
-            $this->deleteImage($doctor, 'uploads');
-            $this->uploadFile($request, 'image', 'doctors', 'uploads', $doctor);
-        }
-
-        // Reload the doctor with appointments
-        $doctor->load('appointments');
-
-        return response()->json([
-            'message' => 'Doctor updated successfully',
-            'doctor' => DoctorResource::make($doctor),
-        ], 200);
     }
 
     public function changeStatus($id): \Illuminate\Http\JsonResponse
     {
-        $doctor = Doctor::find($id);
-        if (!$doctor) {
+        try {
+            $doctor = Doctor::find($id);
+            if (!$doctor) {
+                return response()->json([
+                    'message' => 'Doctor not found',
+                ], 404);
+            }
+
+            if ($doctor->status == 'active') {
+                $doctor->status = 'inactive';
+            } else {
+                $doctor->status = 'active';
+            }
+
+            $doctor->save();
+
             return response()->json([
-                'message' => 'Doctor not found',
-            ], 404);
+                'message' => 'Doctor status changed successfully',
+                'status' => $doctor->status,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Something went wrong please try again',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        if ($doctor->status == 'active') {
-            $doctor->status = 'inactive';
-        } else {
-            $doctor->status = 'active';
-        }
-
-        return response()->json([
-            'message' => 'Doctor status changed successfully',
-            'status' => $doctor->status,
-        ], 200);
     }
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        $doctor = Doctor::find($id);
-        if (!$doctor) {
+        try {
+            DB::beginTransaction();
+            $doctor = Doctor::find($id);
+            if (!$doctor) {
+                return response()->json([
+                    'message' => 'Doctor not found',
+                ], 404);
+            }
+            // Detach all appointments from pivot table
+            $doctor->appointments()->detach();
+
+            $this->deleteImage($doctor, 'uploads');
+
+            $doctor->delete();
+
+            DB::commit();
             return response()->json([
-                'message' => 'Doctor not found',
-            ], 404);
+                'message' => 'Doctor deleted successfully',
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Something went wrong please try again',
+                'error' => $exception->getMessage(),
+            ], 500);
         }
-
-        $this->deleteImage($doctor, 'uploads');
-
-        $doctor->delete();
-
-        return response()->json([
-            'message' => 'Doctor deleted successfully',
-        ], 200);
     }
 
     public function getDoctorsBySection($section_id)
