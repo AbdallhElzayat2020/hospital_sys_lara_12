@@ -71,7 +71,7 @@ class ResetPasswordController extends Controller
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'المستخدم غير موجود',
+                'message' => 'User not found',
             ], 404);
         }
         $otp = $this->otp->validate($request->email, $request->token);
@@ -94,13 +94,13 @@ class ResetPasswordController extends Controller
     {
         // or validate in Class Request
         $request->validate([
-            'token' => ['required', 'min:6'],
+            'token' => ['required', 'min:6', 'max:6'], // length of otp is 6
             'email' => ['required', 'exists:admins,email', 'max:100'],
             'password' => ['required', 'min:6', 'confirmed'],
             'password_confirmation' => ['required', 'min:6'],
         ]);
 
-        $user = Admin::whereEmail($request->email)->first();
+        $user = Admin::where('email', $request->email)->first();
 
         if (!$user) {
             return response()->json([

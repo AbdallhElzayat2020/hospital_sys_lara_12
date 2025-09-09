@@ -39,5 +39,5 @@
     <link href="{{asset('assets/dashboard/css/skin-modes.css')}}" rel="stylesheet"/>
 
 @endif
-
+@livewireStyles
 @stack('css')

@@ -2,16 +2,17 @@
 
 namespace App\Repositories\Services;
 
-use App\Interfaces\Services\SingleServiceInterface;
-use App\Models\Service;
 use Exception;
+use App\Models\Service;
+use App\Http\Resources\ServicesResource;
+use App\Interfaces\Services\SingleServiceInterface;
 
 class SingleServiceRepository implements SingleServiceInterface
 {
     public function index()
     {
         try {
-            $services = Service::paginate(10);
+            $services = Service::paginate(10)->withQueryString();
 
             if (!$services) {
                 return response()->json([
@@ -20,7 +21,7 @@ class SingleServiceRepository implements SingleServiceInterface
             }
 
             return response()->json([
-                'services' => $services
+                'services' => ServicesResource::collection($services)->response()->getData(true),
             ], 200);
         } catch (Exception $e) {
             return response()->json([

@@ -44,7 +44,7 @@ class DoctorController extends Controller
         return $this->doctorRepository->changeStatus($id);
     }
 
-    public function getDoctorsBySection($section_id)
+    public function getDoctorsBySection($section_id): \Illuminate\Http\JsonResponse
     {
         return $this->doctorRepository->getDoctorsBySection($section_id);
     }
