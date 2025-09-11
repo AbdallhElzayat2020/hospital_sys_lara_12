@@ -4,6 +4,7 @@ namespace App\Interfaces\Services;
 
 interface SingleServiceInterface
 {
+
     public function index();
 
     public function store($request);
