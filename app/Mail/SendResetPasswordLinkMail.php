@@ -16,13 +16,10 @@ class SendResetPasswordLinkMail extends Mailable
 
     public $otp;
 
-    /**
-     * Create a new message instance.
-     */
+  
     public function __construct($otp)
     {
         $this->otp = $otp;
-
     }
 
 
@@ -33,9 +30,6 @@ class SendResetPasswordLinkMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(

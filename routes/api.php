@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\Auth\ProfileController;
 use App\Http\Controllers\Api\Admin\Services\SingleServiceController;
 use App\Http\Controllers\Api\Admin\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\Admin\InsuranceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,13 +81,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('admin/doctors', DoctorController::class);
     Route::post('admin/doctors/{id}/change-status', [DoctorController::class, 'changeStatus']);
     Route::get('admin/doctors/sections/{section_id}', [DoctorController::class, 'getDoctorsBySection']);
+
     /*
    |--------------------------------------------------------------------------
    | Services (Services) Management
    |--------------------------------------------------------------------------
    */
-
     Route::apiResource('admin/services', SingleServiceController::class);
+
+    /*
+  |--------------------------------------------------------------------------
+  | Insurances  (Insurances) Management
+  |--------------------------------------------------------------------------
+  */
+    Route::apiResource('admin/insurances', InsuranceController::class);
+
+
 });
 
 

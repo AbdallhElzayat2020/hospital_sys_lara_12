@@ -12,7 +12,7 @@ class Admin  extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
 
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +24,8 @@ class Admin  extends Authenticatable
         'email',
         'password',
     ];
+
+    protected $table = 'admins';
 
     /**
      * The attributes that should be hidden for serialization.
