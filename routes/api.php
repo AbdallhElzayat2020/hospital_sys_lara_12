@@ -2,12 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\DoctorController;
+use App\Http\Controllers\Admin\Api\PatientController;
 use App\Http\Controllers\Api\Admin\SectionController;
+use App\Http\Controllers\Admin\Api\AmbulanceController;
 use App\Http\Controllers\Api\Admin\Auth\AuthController;
-use App\Http\Controllers\Api\Admin\Auth\ProfileController;
-use App\Http\Controllers\Api\Admin\Services\SingleServiceController;
-use App\Http\Controllers\Api\Admin\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Admin\InsuranceController;
+use App\Http\Controllers\Api\Admin\Auth\ProfileController;
+use App\Http\Controllers\Api\Admin\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\Admin\Services\SingleServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,10 +100,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
   |--------------------------------------------------------------------------
-  | Insurances  (Insurances) Management
+  | Ambulances  (Ambulances) Management
   |--------------------------------------------------------------------------
   */
-    Route::apiResource('admin/insurances', InsuranceController::class);
+    Route::apiResource('admin/ambulances', AmbulanceController::class);
+
+    /*
+  |--------------------------------------------------------------------------
+  | Patients  (Patients) Management
+  |--------------------------------------------------------------------------
+  */
+    Route::apiResource('admin/patients', PatientController::class);
 });
 
 
