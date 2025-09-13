@@ -96,7 +96,12 @@ Route::middleware('auth:sanctum')->group(function () {
   */
     Route::apiResource('admin/insurances', InsuranceController::class);
 
-
+    /*
+  |--------------------------------------------------------------------------
+  | Insurances  (Insurances) Management
+  |--------------------------------------------------------------------------
+  */
+    Route::apiResource('admin/insurances', InsuranceController::class);
 });
 
 
