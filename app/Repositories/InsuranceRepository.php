@@ -52,6 +52,7 @@ class InsuranceRepository implements InsuranceInterface
 
     public function update($id, $request)
     {
+
         $insurance = Insurance::find($id);
         if (!$insurance) {
             return response()->json([

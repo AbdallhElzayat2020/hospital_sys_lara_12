@@ -16,22 +16,24 @@ class InsuranceController extends Controller
         $this->insuranceRepository = $insuranceRepository;
     }
 
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         return $this->insuranceRepository->index();
     }
 
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        // validate Request
         return $this->insuranceRepository->store($request);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
+        // validate Request
         return $this->insuranceRepository->update($id, $request);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         return $this->insuranceRepository->destroy($id);
     }
