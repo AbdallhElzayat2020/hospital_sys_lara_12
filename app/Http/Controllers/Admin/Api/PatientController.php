@@ -8,6 +8,7 @@ use App\Repositories\PatientRepository;
 
 class PatientController extends Controller
 {
+
     protected PatientRepository $patientRepository;
 
     public function __construct(PatientRepository $patientRepository)

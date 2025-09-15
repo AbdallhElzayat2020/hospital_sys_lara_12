@@ -3,20 +3,15 @@
 namespace App\Http\Controllers\Api\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Auth\RegisterRequest;
 use App\Http\Requests\Dashboard\Admin\LoginRequest;
 use App\Http\Resources\AdminResource;
 use App\Models\Admin;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
-
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $user = Admin::whereEmail($request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -27,6 +22,7 @@ class AuthController extends Controller
 
         // Create token
         $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',
@@ -37,8 +33,7 @@ class AuthController extends Controller
         ], 200);
     }
 
-
-    public function logout()
+    public function logout(): \Illuminate\Http\JsonResponse
     {
         // logout with api
         Auth::user()->tokens()->delete();
